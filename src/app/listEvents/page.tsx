@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getSession } from "~/server/better-auth/server";
 import { redirect } from "next/navigation";
 import { api } from "~/trpc/server";
+import { ProfileHeader } from "../_components/profile-header";
 
 export default async function ListEvents() {
   const session = await getSession();
@@ -27,23 +28,7 @@ export default async function ListEvents() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </Link>
-            <Link href="/profile" className="flex items-center gap-3 text-sm font-light text-slate-500 hover:text-slate-950 transition-colors">
-              <div className="relative h-8 w-8 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
-                {session.user.image ? (
-                  <Image
-                    src={session.user.image}
-                    alt={session.user.name ?? "Profile"}
-                    fill
-                    unoptimized
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-[10px] font-medium text-slate-400">
-                    {session.user.name?.charAt(0).toUpperCase() ?? "U"}
-                  </div>
-                )}
-              </div>
-            </Link>
+            <ProfileHeader image={session.user.image} />
           </div>
         </div>
       </nav>

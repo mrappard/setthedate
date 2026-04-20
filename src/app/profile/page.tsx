@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "~/server/better-auth/server";
 import { ProfileForm } from "./profile-form";
+import { ProfileHeader } from "../_components/profile-header";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -28,22 +29,7 @@ export default async function ProfilePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </Link>
-            <div className="relative h-8 w-8 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
-              {session.user.image ? (
-                <Image
-                  src={session.user.image}
-                  alt={session.user.name ?? "Profile"}
-                  width={32}
-                  height={32}
-                  unoptimized
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-[10px] font-medium text-slate-400">
-                  {session.user.name?.charAt(0).toUpperCase() ?? "U"}
-                </div>
-              )}
-            </div>
+            <ProfileHeader image={session.user.image} />
           </div>
         </div>
       </nav>

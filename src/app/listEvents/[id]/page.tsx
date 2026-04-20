@@ -4,6 +4,7 @@ import { getSession } from "~/server/better-auth/server";
 import { redirect, notFound } from "next/navigation";
 import { api } from "~/trpc/server";
 import { BookingSection } from "./booking-section";
+import { ProfileHeader } from "../../_components/profile-header";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -37,11 +38,7 @@ export default async function SpecificEvent({ params }: PageProps) {
           <Link href="/" className="text-xl font-extralight tracking-tighter text-slate-950 absolute left-1/2 -translate-x-1/2">
             Set The <span className="font-semibold italic">Date</span>
           </Link>
-          <div className="h-8 w-8 rounded-full border border-slate-200 bg-slate-100 overflow-hidden">
-            {session.user.image && (
-              <Image src={session.user.image} alt="Profile" width={32} height={32} unoptimized className="object-cover" />
-            )}
-          </div>
+          <ProfileHeader image={session.user.image} />
         </div>
       </nav>
 

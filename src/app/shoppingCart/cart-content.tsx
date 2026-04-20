@@ -20,6 +20,17 @@ export function CartContent() {
     },
   });
 
+  const checkoutMutation = api.shoppingCart.createCheckoutSession.useMutation({
+    onSuccess: (data) => {
+      if (data.url) {
+        window.location.assign(data.url);
+      }
+    },
+    onError: (error) => {
+      alert(`Checkout failed: ${error.message}`);
+    },
+  });
+
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -121,13 +132,11 @@ export function CartContent() {
           </div>
 
           <button
-            onClick={() => {
-                // TODO: Implement checkout
-                alert("Checkout not implemented yet");
-            }}
-            className="w-full inline-flex h-14 items-center justify-center rounded-full bg-slate-950 text-xs font-medium text-white transition-all hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98]"
+            onClick={() => checkoutMutation.mutate()}
+            disabled={checkoutMutation.isPending}
+            className="w-full inline-flex h-14 items-center justify-center rounded-full bg-slate-950 text-xs font-medium text-white transition-all hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] disabled:bg-slate-400"
           >
-            Checkout with Stripe
+            {checkoutMutation.isPending ? "Preparing Checkout..." : "Checkout with Stripe"}
           </button>
 
           <p className="text-[10px] text-center font-light text-slate-400 px-4">
