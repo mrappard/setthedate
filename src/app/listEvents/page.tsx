@@ -54,10 +54,24 @@ export default async function ListEvents() {
             Set The <span className="font-semibold italic">Date</span>
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/profile" className="text-sm font-light text-slate-500 hover:text-slate-950 transition-colors">
-              Profile
+            <Link href="/profile" className="flex items-center gap-3 text-sm font-light text-slate-500 hover:text-slate-950 transition-colors">
+              <span>Profile</span>
+              <div className="relative h-8 w-8 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
+                {session.user.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt={session.user.name ?? "Profile"}
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-[10px] font-medium text-slate-400">
+                    {session.user.name?.charAt(0).toUpperCase() ?? "U"}
+                  </div>
+                )}
+              </div>
             </Link>
-            <div className="h-8 w-8 rounded-full bg-slate-100 border border-slate-200" />
           </div>
         </div>
       </nav>
