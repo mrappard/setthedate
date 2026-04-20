@@ -22,7 +22,7 @@ import { env } from "~/env";
 const db = new Firestore({
   projectId: env.FIRE_STORE_PROJECT_ID,
   credentials: env.FIRE_STORE_CREDENTIAL ? JSON.parse(env.FIRE_STORE_CREDENTIAL!) : undefined,
-  databaseId:"print-o-tron-key-value" 
+  databaseId:env.FIRE_STORE_DATABASE
 });
 
 /**
@@ -118,6 +118,16 @@ export const getWithKey = async (collection: string, docId: string) => {
 	return doc.data()!;
 };
 
+/**
+ * Retrieves all documents from a specific collection.
+ *
+ * @param collection - The name of the Firestore collection.
+ * @returns A promise resolving to an array of document data.
+ */
+export const getAllDocsInCollection = async (collection: string) => {
+	const snapshot = await db.collection(collection).get();
+	return snapshot.docs.map((doc) => doc.data());
+};
 
 
 /**

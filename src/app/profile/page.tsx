@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "~/server/better-auth/server";
 import { ProfileForm } from "./profile-form";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function ProfilePage() {
   const session = await getSession();
@@ -22,7 +23,27 @@ export default async function ProfilePage() {
             <Link href="/listEvents" className="text-sm font-light text-slate-500 hover:text-slate-950 transition-colors">
               Events
             </Link>
-            <div className="h-8 w-8 rounded-full bg-slate-950 border border-slate-950" />
+            <Link href="/shoppingCart" className="text-slate-500 hover:text-slate-950 transition-colors">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </Link>
+            <div className="relative h-8 w-8 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
+              {session.user.image ? (
+                <Image
+                  src={session.user.image}
+                  alt={session.user.name ?? "Profile"}
+                  width={32}
+                  height={32}
+                  unoptimized
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-[10px] font-medium text-slate-400">
+                  {session.user.name?.charAt(0).toUpperCase() ?? "U"}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </nav>

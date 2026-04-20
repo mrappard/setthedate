@@ -2,41 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getSession } from "~/server/better-auth/server";
 import { redirect } from "next/navigation";
-
-const MOCK_EVENTS = [
-  {
-    id: "1",
-    name: "Intimate Rooftop Jazz",
-    date: "June 15, 2026",
-    price: "$85",
-    image: "https://images.unsplash.com/photo-1514525253361-bee8718a300a?auto=format&fit=crop&q=80&w=800",
-    category: "Intimate"
-  },
-  {
-    id: "2",
-    name: "Modern Art Gallery Tour",
-    date: "June 22, 2026",
-    price: "$45",
-    image: "https://images.unsplash.com/photo-1518998053901-55d8d3961a9b?auto=format&fit=crop&q=80&w=800",
-    category: "Cultural"
-  },
-  {
-    id: "3",
-    name: "Sunset Vineyard Tasting",
-    date: "July 04, 2026",
-    price: "$120",
-    image: "https://images.unsplash.com/photo-1506377247377-2a5b3b0ca7df?auto=format&fit=crop&q=80&w=800",
-    category: "Outdoor"
-  },
-  {
-    id: "4",
-    name: "Architectural Walk",
-    date: "July 12, 2026",
-    price: "$30",
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800",
-    category: "Social"
-  }
-];
+import { api } from "~/trpc/server";
 
 export default async function ListEvents() {
   const session = await getSession();
@@ -44,6 +10,8 @@ export default async function ListEvents() {
   if (!session) {
     redirect("/login");
   }
+
+  const events = await api.events.getEvents();
 
   return (
     <main className="min-h-screen bg-white text-slate-900 selection:bg-slate-100">
@@ -54,8 +22,12 @@ export default async function ListEvents() {
             Set The <span className="font-semibold italic">Date</span>
           </Link>
           <div className="flex items-center gap-6">
+            <Link href="/shoppingCart" className="text-slate-500 hover:text-slate-950 transition-colors">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </Link>
             <Link href="/profile" className="flex items-center gap-3 text-sm font-light text-slate-500 hover:text-slate-950 transition-colors">
-              <span>Profile</span>
               <div className="relative h-8 w-8 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
                 {session.user.image ? (
                   <Image
@@ -87,7 +59,7 @@ export default async function ListEvents() {
 
         {/* Events Grid */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-2">
-          {MOCK_EVENTS.map((event) => (
+          {events.map((event) => (
             <div key={event.id} className="group flex flex-col space-y-4">
               {/* Image Container */}
               <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-slate-100 border border-slate-100 transition-all group-hover:shadow-xl group-hover:shadow-slate-100">

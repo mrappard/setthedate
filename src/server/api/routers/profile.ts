@@ -2,22 +2,20 @@ import { z } from "zod";
 import { getWithKey, saveWithKey } from "~/keystore";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
+export const profileSchema = z.object({
+  name: z.string().min(1),
+  birthDate: z.string().optional(),
+  salary: z.string().optional(),
+  race: z.string().optional(),
+  religion: z.string().optional(),
+  height: z.string().optional(),
+  lookingFor: z.string().optional(),
+  image: z.string().optional(),
+  userId: z.string(),
+  updatedAt: z.union([z.date(), z.any()]), // Firestore might return a Timestamp
+});
 
-/* Make this into a Zod Object */
-export interface Profile {
-  name: string;
-  birthDate?: string;
-  salary?: string;
-  race?: string;
-  religion?: string;
-  height?: string;
-  lookingFor?: string;
-  image?: string;
-  userId: string;
-  updatedAt: Date;
-}
-
-
+export type Profile = z.infer<typeof profileSchema>;
 
 export const profileRouter = createTRPCRouter({
   saveProfile: protectedProcedure
@@ -40,17 +38,25 @@ export const profileRouter = createTRPCRouter({
         userId,
         updatedAt: new Date(),
       };
-      saveWithKey("profiles",userId, profile )
+      try {
+         await saveWithKey("profiles", userId, profile);
+      } catch (error) {
+        console.log(error);
+      }
+     
       return profile;
     }),
 
   getProfile: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
-    const profile = getWithKey("profiles",userId,)
-    //Check with ZOD and return if it matches, otherwise return the empty object
 
+    try {
+   const rawProfile = await getWithKey("profiles", userId);
+    
+    // Check with ZOD and return if it matches, otherwise return the empty object/defaults
+    const result = profileSchema.safeParse(rawProfile);
 
-    if (!profile) {
+    if (!result.success) {
       return {
         name: ctx.session.user.name ?? "",
         image: ctx.session.user.image ?? "",
@@ -63,7 +69,10 @@ export const profileRouter = createTRPCRouter({
       };
     }
     
-    
-    return profile;
+    return result.data;
+    } catch {
+        return null;
+    }
+ 
   }),
 });

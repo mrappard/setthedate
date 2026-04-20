@@ -1,3 +1,7 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
+
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
@@ -15,6 +19,9 @@ export const env = createEnv({
     BETTER_AUTH_GOOGLE_SECRET:z.string(),
     FIRE_STORE_PROJECT_ID:z.string(),
     FIRE_STORE_CREDENTIAL:z.string(),
+    FIRE_STORE_DATABASE:z.string(),
+    STRIPE_PUBLIC_KEY:z.string(),
+    STRIPE_PRIVATE_KEY:z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"]) 
       .default("development"),
@@ -41,7 +48,9 @@ export const env = createEnv({
     BETTER_AUTH_GOOGLE_SECRET:process.env.BETTER_AUTH_GOOGLE_SECRET,
     FIRE_STORE_PROJECT_ID:process.env.FIRE_STORE_PROJECT_ID,
     FIRE_STORE_CREDENTIAL:process.env.FIRE_STORE_CREDENTIAL,
-
+    FIRE_STORE_DATABASE:process.env.FIRE_STORE_DATABASE,
+    STRIPE_PUBLIC_KEY:process.env.STRIPE_PUBLIC_KEY,
+    STRIPE_PRIVATE_KEY:process.env.STRIPE_PRIVATE_KEY,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
